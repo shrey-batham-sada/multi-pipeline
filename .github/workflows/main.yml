@@ -12,14 +12,14 @@ on:
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - dockerfile: ./batch_1/Dockerfile
-            image: ghcr.io/username/image1
-          - dockerfile: ./batch_2/Dockerfile
-            image: ghcr.io/username/image2
+    # strategy:
+    #   fail-fast: false
+    #   matrix:
+    #     include:
+    #       - dockerfile: ./batch_1/Dockerfile
+    #         image: ghcr.io/username/image1
+    #       - dockerfile: ./batch_2/Dockerfile
+    #         image: ghcr.io/username/image2
     permissions:
       contents: read
       packages: write
