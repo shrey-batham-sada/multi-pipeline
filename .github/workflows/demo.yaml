@@ -1,0 +1,27 @@
+name: Get Changed Directories
+
+on:
+  push:
+    branches:
+      - main  # Adjust the branch name as per your needs
+  pull_request:
+    branches:
+      - main  # Adjust the branch name as per your needs
+
+jobs:
+  get_changed_dirs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Get changed files
+        id: changed_files
+        uses: tj-actions/changed-files@v42
+
+      - name: Extract directories
+        run: |
+          echo "Changed files:"
+          echo "${{ steps.changed_files.outputs.files }}"
+          echo "Directories:"
+          echo "${{ steps.changed_files.outputs.directories }}"
