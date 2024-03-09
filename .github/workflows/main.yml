@@ -3,8 +3,11 @@ name: Docker Image CI
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    paths:
+      - 'batch_1/**'
+      - 'batch_2/**'
+      - 'batch_3/**'
+      - 'batch_4/**'
 
 jobs:
   build-and-push-image:
