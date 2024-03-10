@@ -44,7 +44,7 @@ jobs:
               DIRECTORIES="$DIRECTORIES $dir"
             fi
           done
-          echo "::set-env name=DIRECTORIES::$DIRECTORIES"
+          echo "DIRECTORIES=$DIRECTORIES" >> $GITHUB_ENV
       # - name: Determine Changed Directories
       #   id: diff
       #   run: |
@@ -53,10 +53,9 @@ jobs:
   build_images:
     needs: discover_directories
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        directory: ${{ split(env.DIRECTORIES) }}
+        directory: ${{ steps.filtered-directories.outputs.DIRECTORIES }}
 
     steps:
       - name: Checkout code
