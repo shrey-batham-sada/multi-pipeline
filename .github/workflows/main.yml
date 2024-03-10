@@ -45,7 +45,7 @@ jobs:
       - name: Determine Changed Directories
         id: diff
         run: |
-          CHANGED_DIRS=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -oE 'batch_[0-9]+/' | sort -u)
+          CHANGED_DIRS=$(git diff --name-only ${{ github.event.after }} ${{ github.event.before }} | grep -oE 'batch_[0-9]+/' | sort -u)
           echo "::set-output name=dirs::$CHANGED_DIRS"
 
       - name: Build and Push Docker Images
