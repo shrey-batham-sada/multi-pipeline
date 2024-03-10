@@ -53,16 +53,20 @@ jobs:
   build_images:
     needs: discover_directories
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        directory: ${{ steps.filtered-directories.outputs.DIRECTORIES }}
+    # strategy:
+    #   matrix:
+    #     directory: ${{ steps.filtered-directories.outputs.DIRECTORIES }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Build Docker Image
-        run: docker build -t your-image:${{ matrix.directory }} ./${{ matrix.directory }}
+        run: |
+          IFS=' ' read -r -a DIR_ARRAY <<< "${{ env.DIRECTORIES }}"
+          for directory in "${DIR_ARRAY[@]}"; do
+            docker build -t your-image:${directory} ./${directory}
+          done
 
       # - name: Build and Push Docker Images
       #   run: |
