@@ -19,9 +19,10 @@ jobs:
         id: changed_files
         uses: tj-actions/changed-files@v42
 
-      - name: Extract directories
+      - name: List all changed files
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
-          echo "Changed files:"
-          echo "${{ steps.changed_files.outputs.files }}"
-          echo "Directories:"
-          echo "${{ steps.changed_files.outputs.directories }}"
+          for file in ${ALL_CHANGED_FILES}; do
+            echo "$file was changed"
+          done
