@@ -10,7 +10,7 @@ on:
     #   - 'batch_4/**'
 
 jobs:
-  build-and-push-image:
+  discover_directories:
     runs-on: ubuntu-latest
     # strategy:
     #   fail-fast: false
@@ -27,37 +27,54 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        
+
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v42
-        # To compare changes between the current commit and the last pushed remote commit set `since_last_remote_commit: true`. e.g
-        # with:
-        #   since_last_remote_commit: true 
 
-      - name: List all changed files
-        env:
-          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+      - name: Filter directories with prefix 'batch_'
+        id: filtered-directories
         run: |
-          for file in ${ALL_CHANGED_FILES}; do
-            echo "$file was changed"
-          done        
-      - name: Determine Changed Directories
-        id: diff
-        run: |
-          CHANGED_DIRS=$(git diff --name-only ${{ github.event.after }} ${{ github.event.before }} | grep -oE 'batch_[0-9]+/' | sort -u)
-          echo "::set-output name=dirs::$CHANGED_DIRS"
+          DIRECTORIES=""
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            # Extract directory name
+            dir=$(dirname "${file}")
+            # Check if the directory has the prefix 'batch_'
+            if [[ $dir == batch_* ]]; then
+              DIRECTORIES="$DIRECTORIES $dir"
+            fi
+          done
+          echo "::set-env name=DIRECTORIES::$DIRECTORIES"
+      # - name: Determine Changed Directories
+      #   id: diff
+      #   run: |
+      #     CHANGED_DIRS=$(git diff --name-only ${{ github.event.after }} ${{ github.event.before }} | grep -oE 'batch_[0-9]+/' | sort -u)
+      #     echo "::set-output name=dirs::$CHANGED_DIRS"
+  build_images:
+    needs: discover_directories
+    runs-on: ubuntu-latest
 
-      - name: Build and Push Docker Images
-        run: |
-          for DIR in ${{ steps.diff.outputs.dirs }}; do
-            DOCKERFILE="./$DIR/Dockerfile"
-            IMAGE="ghcr.io/username/image$(echo $DIR | grep -oE '[0-9]+')"
-            echo "Building Dockerfile: $DOCKERFILE"
-            echo "Image: $IMAGE"
-            docker build . --file $DOCKERFILE --tag $IMAGE:$(date +%s)
-            # You may want to push the image here as well
-          done     
+    strategy:
+      matrix:
+        directory: ${{ split(env.DIRECTORIES) }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Docker Image
+        run: docker build -t your-image:${{ matrix.directory }} ./${{ matrix.directory }}
+
+      # - name: Build and Push Docker Images
+      #   run: |
+      #     for DIR in ${{ steps.diff.outputs.dirs }}; do
+      #       DOCKERFILE="./$DIR/Dockerfile"
+      #       IMAGE="ghcr.io/username/image$(echo $DIR | grep -oE '[0-9]+')"
+      #       echo "Building Dockerfile: $DOCKERFILE"
+      #       echo "Image: $IMAGE"
+      #       docker build . --file $DOCKERFILE --tag $IMAGE:$(date +%s)
+      #       # You may want to push the image here as well
+      #     done
 
       # - name: Log in to the Container registry
       #   uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
