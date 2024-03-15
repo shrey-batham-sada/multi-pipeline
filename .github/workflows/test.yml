@@ -27,9 +27,9 @@ jobs:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
           for file in ${ALL_CHANGED_FILES}; do
+            directory=$(dirname "$file")
+            directory=$(basename "$directory")
             if [ -d "$file" ]; then
-              directory=$(dirname "$file")
-              directory=$(basename "$directory")
               if [[ "$directory" == batch_* ]]; then
                 echo "$directory directory was changed"
               fi
