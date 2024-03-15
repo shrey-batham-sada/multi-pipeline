@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: List Changed Files
 
 on:
   push:
@@ -27,5 +27,10 @@ jobs:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
           for file in ${ALL_CHANGED_FILES}; do
-            echo "$file was changed"
+            if [ -d "$file" ]; then
+              directory=$(basename "$file")
+              if [[ "$directory" == batch_* ]]; then
+                echo "$directory directory was changed"
+              fi
+            fi
           done
