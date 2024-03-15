@@ -7,6 +7,8 @@ on:
 jobs:
   Get_Changed_dir:
     runs-on: ubuntu-latest
+    outputs:
+      DIRECTORIES: ${{ steps.filter_directories.outputs.DIRECTORIES }}
     permissions:
       contents: read
       packages: write
@@ -47,7 +49,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: 
-        dockerfile: ${{ fromJson(needs.list_changed_files.outputs.DIRECTORIES) }}
+        dockerfile: ${{ needs.list_changed_files.outputs.DIRECTORIES }}
       
     steps:
       - name: Checkout code
