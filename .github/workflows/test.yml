@@ -26,12 +26,14 @@ jobs:
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
-          for file in "$ALL_CHANGED_FILES"; do
+          for file in $ALL_CHANGED_FILES; do
+            if [[ $file == batch_* ]]; then
+            # Extract directory name and add it to the array
             directory=$(dirname "$file")
-            directory=$(basename "$directory")
-            if [ -d "$file" ]; then
-              if [[ "$directory" == batch_* ]]; then
-                echo "$directory directory was changed"
-              fi
+            filtered_directories+=("$directory")
             fi
+          done
+          echo "Filtered directories:"
+          for dir in "${filtered_directories[@]}"; do
+            echo "$dir"
           done
