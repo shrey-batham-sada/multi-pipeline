@@ -28,7 +28,8 @@ jobs:
         run: |
           for file in ${ALL_CHANGED_FILES}; do
             if [ -d "$file" ]; then
-              directory=$(basename "$file")
+              directory=$(dirname "$file")
+              directory=$(basename "$directory")
               if [[ "$directory" == batch_* ]]; then
                 echo "$directory directory was changed"
               fi
