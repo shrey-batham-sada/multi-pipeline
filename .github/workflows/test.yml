@@ -38,7 +38,7 @@ jobs:
           for dir in "${filtered_directories[@]}"; do
             echo "$dir"
           done
-          echo "DIRECTORIES=$filtered_directories" >> "$GITHUB_OUTPUT"
+          echo "DIRECTORIES=${filtered_directories[*]}" >> "$GITHUB_OUTPUT"
           
           
   build_images:
