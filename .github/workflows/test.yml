@@ -29,6 +29,7 @@ jobs:
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
+          filtered_directories=()
           for file in $ALL_CHANGED_FILES; do
             if [[ $file == batch_* ]]; then
             # Extract directory name and add it to the array
@@ -49,7 +50,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: 
-        dockerfile: ${{ needs.list_changed_files.outputs.DIRECTORIES }}
+        dockerfile: ${{ fromJson(needs.list_changed_files.outputs.DIRECTORIES) }}
       
     steps:
       - name: Checkout code
