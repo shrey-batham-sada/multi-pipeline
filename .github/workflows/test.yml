@@ -47,7 +47,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: 
-        dockerfile: [ steps.filter_directories.outputs.DIRECTORIES ]
+        dockerfile: ${{ fromJson(needs.list_changed_files.outputs.DIRECTORIES) }}
       
     steps:
       - name: Checkout code
