@@ -1,12 +1,14 @@
-name: Docker Image CI
+name: List Changed Files
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  build-and-push-image:
+  Get_Changed_dir:
     runs-on: ubuntu-latest
+    outputs:
+      DIRECTORIES: ${{ steps.filter_directories.outputs.DIRECTORIES }}
     permissions:
       contents: read
       packages: write
@@ -23,8 +25,36 @@ jobs:
         #   since_last_remote_commit: true 
 
       - name: List all changed files
+        id: filter_directories
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
-          for file in ${ALL_CHANGED_FILES}; do
-            echo "$file was changed"
+          filtered_directories=()
+          for file in $ALL_CHANGED_FILES; do
+            if [[ $file == batch_* ]]; then
+            # Extract directory name and add it to the array
+            directory=$(dirname "$file")
+            filtered_directories+=("$directory")
+            fi
+          done
+          echo "Filtered directories:"
+          for dir in "${filtered_directories[@]}"; do
+            echo "$dir"
+          done
+          echo "DIRECTORIES=${filtered_directories[*]}" >> "$GITHUB_OUTPUT"
+          
+          
+  build_images:
+    runs-on: ubuntu-latest
+    needs: Get_Changed_dir
+    # strategy:
+    #   fail-fast: false
+    #   matrix: 
+    #     dockerfile: ${{ fromJson(needs.list_changed_files.outputs.DIRECTORIES) }}
+      
+    steps:
+      - name: print
+        run: |
+           echo "${{ steps.filter_directories.outputs.DIRECTORIES }}"
+        
+        
