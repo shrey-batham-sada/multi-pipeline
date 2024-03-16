@@ -41,10 +41,11 @@ jobs:
           for dir in "${filtered_directories[@]}"; do
             echo "$dir"
           done
-          echo "DIRECTORIES=${filtered_directories[*]}" > directories.env
-      - name: Set output
-        run: |
-          echo "DIRECTORIES=${filtered_directories[*]}" >> $GITHUB_ENV
+          if [ ${#filtered_directories[@]} -eq 0 ]; then
+            echo "DIRECTORIES=null" >> $GITHUB_ENV
+          else
+            echo "DIRECTORIES=${filtered_directories[*]}" >> $GITHUB_ENV
+          fi
           
           
   build_images:
@@ -60,6 +61,6 @@ jobs:
     steps:
       - name: Print filtered directories
         run: |
-           echo "${{ toJson(needs.Get_Changed_dir.outputs.DIRECTORIES) }}"
+           echo "Filtered directories: ${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}"
         
         
