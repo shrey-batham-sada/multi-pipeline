@@ -51,7 +51,7 @@ jobs:
           
   build_images:
     runs-on: ubuntu-latest
-    if: ${{ needs.Get_Changed_dir.outputs.DIRECTORIES != null }}
+    if: ${{ needs.Get_Changed_dir.outputs.DIRECTORIES }} != null
     needs: Get_Changed_dir
     strategy:
       fail-fast: false
