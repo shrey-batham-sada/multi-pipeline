@@ -44,12 +44,14 @@ jobs:
           echo "DIRECTORIES=${filtered_directories[*]}" > directories.env
       - name: Set output
         run: |
-          echo "DIRECTORIES=${{ steps.filter_directories.outputs.DIRECTORIES }}" >> $GITHUB_ENV    
+          echo "DIRECTORIES=${filtered_directories[*]}" >> $GITHUB_ENV
           
           
   build_images:
     runs-on: ubuntu-latest
     needs: Get_Changed_dir
+    outputs:
+      FILTERED_DIRECTORIES: ${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}
     # strategy:
     #   fail-fast: false
     #   matrix: 
