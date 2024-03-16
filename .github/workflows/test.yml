@@ -54,10 +54,10 @@ jobs:
     needs: Get_Changed_dir
     outputs:
       FILTERED_DIRECTORIES: ${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}
-    # strategy:
-    #   fail-fast: false
-    #   matrix: 
-    #     dockerfile: ${{ needs.list_changed_files.outputs.DIRECTORIES }}
+    strategy:
+      fail-fast: false
+      matrix: 
+        dockerfile: [ ${{ needs.list_changed_files.outputs.DIRECTORIES }} ]
       
     steps:
       - name: Print filtered directories
