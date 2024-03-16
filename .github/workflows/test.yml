@@ -56,8 +56,8 @@ jobs:
     #     dockerfile: ${{ fromJson(needs.list_changed_files.outputs.DIRECTORIES) }}
       
     steps:
-      - name: print
+      - name: Print filtered directories
         run: |
-           echo "${{ fromJson(needs.list_changed_files.outputs.DIRECTORIES) }}"
+           echo "${{ toJson(needs.Get_Changed_dir.outputs.DIRECTORIES) }}"
         
         
