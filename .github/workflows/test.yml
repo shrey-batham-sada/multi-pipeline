@@ -55,6 +55,6 @@ jobs:
     steps:
       - name: print
         run: |
-           echo "${{ steps.filter_directories.outputs.DIRECTORIES }}"
+           echo "${{ fromJson(needs.list_changed_files.outputs.DIRECTORIES) }}"
         
         
