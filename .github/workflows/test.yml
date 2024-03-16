@@ -59,8 +59,9 @@ jobs:
       matrix: 
         dockerfile: [ "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}" ]
     steps:
-      - name: Print filtered directories
-        run: |
-           echo "Filtered directories: ${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}"
+      - name: Build
+        run: |-
+          docker build \
+            -t "${{ github.ref_name }}:${{ github.run_number }}" ${{ matrix.dockerfile }}/Dockerfile
         
         
