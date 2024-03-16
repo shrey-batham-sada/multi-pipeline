@@ -57,8 +57,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: 
-        dockerfile: [ ${{ needs.list_changed_files.outputs.DIRECTORIES }} ]
-      
+        dockerfile: [ "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}" ]
     steps:
       - name: Print filtered directories
         run: |
