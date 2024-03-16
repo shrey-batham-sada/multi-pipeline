@@ -19,10 +19,7 @@ jobs:
         
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v42
-        # To compare changes between the current commit and the last pushed remote commit set `since_last_remote_commit: true`. e.g
-        # with:
-        #   since_last_remote_commit: true 
+        uses: tj-actions/changed-files@v42 
 
       - name: List all changed files
         id: filter_directories
@@ -42,9 +39,9 @@ jobs:
             echo "$dir"
           done
           if [ ${#filtered_directories[@]} -eq 0 ]; then
-            echo "DIRECTORIES=null" >> $GITHUB_ENV
+            echo "DIRECTORIES=null" >> $GITHUB_OUTPUT
           else
-            echo "DIRECTORIES=${filtered_directories[*]}" >> $GITHUB_ENV
+            echo "DIRECTORIES=${filtered_directories[*]}" >> $GITHUB_OUTPUT
           fi
           
           
@@ -56,7 +53,7 @@ jobs:
     # strategy:
     #   fail-fast: false
     #   matrix: 
-    #     dockerfile: ${{ fromJson(needs.list_changed_files.outputs.DIRECTORIES) }}
+    #     dockerfile: ${{ needs.list_changed_files.outputs.DIRECTORIES }}
       
     steps:
       - name: Print filtered directories
