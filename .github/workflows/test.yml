@@ -41,7 +41,7 @@ jobs:
           for dir in "${filtered_directories[@]}"; do
             echo "$dir"
           done
-          echo "DIRECTORIES=${filtered_directories[*]}" >> "$GITHUB_OUTPUT"
+          echo "::set-output name=DIRECTORIES::${filtered_directories[*]}"
           
           
   build_images:
