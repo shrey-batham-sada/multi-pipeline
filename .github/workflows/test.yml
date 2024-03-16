@@ -41,7 +41,11 @@ jobs:
           if [ ${#filtered_directories[@]} -eq 0 ]; then
             echo "DIRECTORIES=null" >> $GITHUB_OUTPUT
           else
-            echo "DIRECTORIES=\"${filtered_directories[*]}\"" >> $GITHUB_OUTPUT
+            # Join array elements with comma and enclose with quotes
+            directories_string=$(printf "\"%s\"," "${filtered_directories[@]}")
+            # Remove trailing comma
+            directories_string="${directories_string%,}"
+            echo "DIRECTORIES=${directories_string}" >> $GITHUB_OUTPUT
           fi
           
           
