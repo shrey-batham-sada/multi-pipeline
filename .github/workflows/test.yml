@@ -41,7 +41,10 @@ jobs:
           for dir in "${filtered_directories[@]}"; do
             echo "$dir"
           done
-          echo "::set-output name=DIRECTORIES::${filtered_directories[*]}"
+          echo "DIRECTORIES=${filtered_directories[*]}" > directories.env
+      - name: Set output
+        run: |
+          echo "DIRECTORIES=${{ steps.filter_directories.outputs.DIRECTORIES }}" >> $GITHUB_ENV    
           
           
   build_images:
