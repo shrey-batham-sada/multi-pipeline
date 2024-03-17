@@ -56,7 +56,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix: 
-        dockerfile: [ "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}" ]
+        # dockerfile: [ "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}" ]
+        dockerfile: [ batch_2,batch_4 ]
     steps:
       - name: Build
         run: |-
