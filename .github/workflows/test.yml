@@ -42,7 +42,7 @@ jobs:
             echo "DIRECTORIES=null" >> $GITHUB_OUTPUT
           else
             # Join array elements with comma and enclose with quotes
-            directories_string=$(printf "\"%s\"," "${filtered_directories[@]}")
+            IFS=,; directories_string="${filtered_directories[*]}"
             # Remove trailing comma
             directories_string="${directories_string%,}"
             echo "DIRECTORIES=${directories_string}" >> $GITHUB_OUTPUT
