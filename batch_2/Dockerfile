@@ -1,4 +1,4 @@
-#trigger-22
+#trigger-23
 FROM node:18-alpine
 WORKDIR /app
 COPY . .
