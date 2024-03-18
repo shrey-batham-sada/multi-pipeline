@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         
       - name: Get changed files
         id: changed-files
@@ -45,7 +45,7 @@ jobs:
             IFS=,; directories_string="${filtered_directories[*]}"
             # Remove trailing comma
             directories_string="${directories_string%,}"
-            echo "DIRECTORIES=[${directories_string}]" >> $GITHUB_OUTPUT
+            echo "DIRECTORIES=${directories_string}" >> $GITHUB_OUTPUT
           fi
           
           
@@ -59,12 +59,17 @@ jobs:
         dockerfile: [ "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}" ]
         # dockerfile: ${{fromJson(needs.Get_Changed_dir.outputs.DIRECTORIES)}}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
       - name: Build
         run: |-
-          echo "[ "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}" ]"
+          echo "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}"
       - name: Build
         run: |-
-          docker build \
-            -t "${{ github.ref_name }}:${{ github.run_number }}" -f ${{ matrix.dockerfile }}/Dockerfile
+          ls -lart 
+      - name: Build
+        run: |-
+          docker build -t "${{ github.ref_name }}:${{ github.run_number }}" -f ./${{ matrix.dockerfile }}/Dockerfile .
         
         
