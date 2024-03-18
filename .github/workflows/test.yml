@@ -61,7 +61,7 @@ jobs:
     steps:
       - name: Build
         run: |-
-          echo "[ "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}" ]"
+          echo "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}"
       - name: Build
         run: |-
           docker build \
