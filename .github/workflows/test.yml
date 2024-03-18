@@ -45,7 +45,7 @@ jobs:
             IFS=,; directories_string="${filtered_directories[*]}"
             # Remove trailing comma
             directories_string="${directories_string%,}"
-            echo "DIRECTORIES=${directories_string}" >> $GITHUB_OUTPUT
+            echo "DIRECTORIES=[${directories_string}]" >> $GITHUB_OUTPUT
           fi
           
           
@@ -56,8 +56,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix: 
-        dockerfile: [ "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}" ]
-        # dockerfile: ${{fromJson(needs.Get_Changed_dir.outputs.DIRECTORIES)}}
+        # dockerfile: [ "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}" ]
+        dockerfile: ${{fromJson(needs.Get_Changed_dir.outputs.DIRECTORIES)}}
     steps:
       - name: Build
         run: |-
