@@ -29,9 +29,9 @@ jobs:
           filtered_directories=()
           for file in $ALL_CHANGED_FILES; do
             if [[ $file == batch_* ]]; then
-            # Extract directory name and add it to the array
-            directory=$(dirname "$file")
-            filtered_directories+=("$directory")
+              # Extract directory name and add it to the array
+              directory=$(dirname "$file")
+              filtered_directories+=("$directory")
             fi
           done
           echo "Filtered directories:"
@@ -39,13 +39,13 @@ jobs:
             echo "$dir"
           done
           if [ ${#filtered_directories[@]} -eq 0 ]; then
-            echo "DIRECTORIES=null" >> $GITHUB_OUTPUT
+            echo "DIRECTORIES=null" >> $GITHUB_ENV
           else
             # Join array elements with comma and enclose with quotes
             IFS=,; directories_string="${filtered_directories[*]}"
             # Remove trailing comma
             directories_string="${directories_string%,}"
-            echo "DIRECTORIES=[${directories_string}]" >> $GITHUB_OUTPUT
+            echo "DIRECTORIES=[${directories_string}]" >> $GITHUB_ENV
           fi
           
           
@@ -61,7 +61,7 @@ jobs:
     steps:
       - name: Build
         run: |-
-          echo "[ "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}" ]"
+          echo "[ ${DOCKERFILES} ]"
       - name: Build
         run: |-
           docker build \
