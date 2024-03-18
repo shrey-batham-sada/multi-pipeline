@@ -70,6 +70,9 @@ jobs:
           ls -lart 
       - name: Build
         run: |-
-          docker build -t "${{ github.ref_name }}:${{ github.run_number }}" -f ./${{ matrix.dockerfile }}/Dockerfile .
+          for dir in ${{ matrix.dockerfile }}; do
+          echo "Building Docker image in directory: $dir"
+          docker build -t "${{ github.ref_name }}:${{ github.run_number }}" -f ./$dir/Dockerfile ./$dir
+          done
         
         
