@@ -64,7 +64,7 @@ jobs:
           echo "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}"
       - name: Build
         run: |-
-          pwd 
+          ls -lart 
       - name: Build
         run: |-
           docker build -t "${{ github.ref_name }}:${{ github.run_number }}" -f ./${{ matrix.dockerfile }}/Dockerfile .
