@@ -57,11 +57,11 @@ jobs:
       fail-fast: false
       matrix: 
         # dockerfile: [ "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}" ]
-        dockerfile: ${{ split(needs.Get_Changed_dir.outputs.DIRECTORIES, ',') }}
+        dockerfile: ${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}
     steps:
       - name: Build
         run: |-
-          echo "[ ${DOCKERFILES} ]"
+          echo ${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}
       - name: Build
         run: |-
           docker build \
