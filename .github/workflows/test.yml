@@ -67,7 +67,7 @@ jobs:
           echo "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}"
       - name: Build
         run: |-
-          ls -lart 
+          echo $dockerfile
       - name: Build
         run: |-
           for dir in ${{ matrix.dockerfile }}; do
