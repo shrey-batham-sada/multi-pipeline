@@ -54,10 +54,10 @@ jobs:
     if: ${{ needs.Get_Changed_dir.outputs.DIRECTORIES != 'null' }}
     needs: Get_Changed_dir
     strategy:
-      fail-fast: false
+      # fail-fast: false
       matrix: 
-        # dockerfile: [ "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}" ]
-        dockerfile: ${{ fromJSON(needs.Get_Changed_dir.outputs.DIRECTORIES) }}
+        dockerfile: [ "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}" ]
+        # dockerfile: ${{ fromJSON(needs.Get_Changed_dir.outputs.DIRECTORIES) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
