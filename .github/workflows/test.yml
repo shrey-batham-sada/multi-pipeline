@@ -54,10 +54,10 @@ jobs:
     if: ${{ needs.Get_Changed_dir.outputs.DIRECTORIES != 'null' }}
     needs: Get_Changed_dir
     strategy:
-      fail-fast: false
+      # fail-fast: false
       matrix: 
         dockerfile: [ "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}" ]
-        # dockerfile: ${{fromJson(needs.Get_Changed_dir.outputs.DIRECTORIES)}}
+        # dockerfile: ${{ fromJSON(needs.Get_Changed_dir.outputs.DIRECTORIES) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -67,9 +67,10 @@ jobs:
           echo "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}"
       - name: Build
         run: |-
-          ls -lart 
+          echo $dockerfile
       - name: Build
         run: |-
-          docker build -t "${{ github.ref_name }}:${{ github.run_number }}" -f ./${{ matrix.dockerfile }}/Dockerfile .
-        
-        
+          for dir in ${{ matrix.dockerfile }}; do
+          echo "Building Docker image in directory: $dir"
+          docker build -t "${{ github.ref_name }}:${{ github.run_number }}" -f ./$dir/Dockerfile ./$dir
+          done
