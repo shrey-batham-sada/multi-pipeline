@@ -45,7 +45,7 @@ jobs:
             IFS=,; directories_string="${filtered_directories[*]}"
             # Remove trailing comma
             directories_string="${directories_string%,}"
-            directories_string="{ \"DIRECTORIES\": $directories_string }"
+            directories_string="{ \"DIRECTORIES\": [$directories_string] }"
             echo "DIRECTORIES=${directories_string}" >> $GITHUB_OUTPUT
           fi
           
