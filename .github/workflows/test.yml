@@ -39,14 +39,14 @@ jobs:
             echo "$dir"
           done
           if [ ${#filtered_directories[@]} -eq 0 ]; then
-            echo "DIRECTORIES=null" >> $GITHUB_ENV
+            # echo "DIRECTORIES=null" >> $GITHUB_ENV
           else
             # Join array elements with comma and enclose with quotes
             IFS=,; directories_string="${filtered_directories[*]}"
             # Remove trailing comma
             directories_string="${directories_string%,}"
             directories_string="{ \"DIRECTORIES\": [$directories_string] }"
-            echo "DIRECTORIES=${directories_string}" >> $GITHUB_ENV
+            echo "DIRECTORIES=${directories_string}" >> $GITHUB_OUTPUT
           fi
           
           
