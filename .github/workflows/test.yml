@@ -39,7 +39,6 @@ jobs:
             echo "$dir"
           done
           if [ ${#filtered_directories[@]} -eq 0 ]; then
-            # echo "DIRECTORIES=null" >> $GITHUB_ENV
           else
             # Join array elements with comma and enclose with quotes
             IFS=,; directories_string="${filtered_directories[*]}"
