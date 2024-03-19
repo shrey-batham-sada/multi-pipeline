@@ -29,9 +29,9 @@ jobs:
           filtered_directories=()
           for file in $ALL_CHANGED_FILES; do
             if [[ $file == batch_* ]]; then
-              # Extract directory name and add it to the array
-              directory=$(dirname "$file")
-              filtered_directories+=("$directory")
+            # Extract directory name and add it to the array
+            directory=$(dirname "$file")
+            filtered_directories+=("$directory")
             fi
           done
           echo "Filtered directories:"
@@ -39,12 +39,12 @@ jobs:
             echo "$dir"
           done
           if [ ${#filtered_directories[@]} -eq 0 ]; then
+            echo "DIRECTORIES=null" >> $GITHUB_OUTPUT
           else
             # Join array elements with comma and enclose with quotes
             IFS=,; directories_string="${filtered_directories[*]}"
             # Remove trailing comma
             directories_string="${directories_string%,}"
-            directories_string="{ \"DIRECTORIES\": [$directories_string] }"
             echo "DIRECTORIES=${directories_string}" >> $GITHUB_OUTPUT
           fi
           
@@ -57,7 +57,7 @@ jobs:
       fail-fast: false
       matrix: 
         # dockerfile: [ "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}" ]
-        dockerfile: ${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}
+        dockerfile: ${{ fromJSON(needs.Get_Changed_dir.outputs.DIRECTORIES) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -74,5 +74,3 @@ jobs:
           echo "Building Docker image in directory: $dir"
           docker build -t "${{ github.ref_name }}:${{ github.run_number }}" -f ./$dir/Dockerfile ./$dir
           done
-        
-        
