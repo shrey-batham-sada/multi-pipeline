@@ -42,4 +42,4 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: List changed directories (informational)
-        run: echo "Changed directories: ${{ needs.get_changed_directories.outputs.directories }}"
+        run: echo "${{ needs.get_changed_directories.outputs.directories }}"
