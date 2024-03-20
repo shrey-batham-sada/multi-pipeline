@@ -1,45 +1,76 @@
-name: List Changed Files and Build Images
+name: List Changed Files
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  get_changed_directories:
+  Get_Changed_dir:
     runs-on: ubuntu-latest
     outputs:
-      directories: ${{ steps.filter_directories.outputs.directories }}
+      DIRECTORIES: ${{ steps.filter_directories.outputs.DIRECTORIES }}
+    permissions:
+      contents: read
+      packages: write
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v42 
 
-      - uses: tj-actions/changed-files@v42
-        id: changed_files
-
-      - name: Filter directories
+      - name: List all changed files
         id: filter_directories
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
-          directories=()
-          for file in ${{ steps.changed_files.outputs.all_changed_files }}; do
-            if [[ $file == "batch_*" ]]; then
-              directory=$(dirname "$file")
-              directories+=("$directory")
+          filtered_directories=()
+          for file in $ALL_CHANGED_FILES; do
+            if [[ $file == batch_* ]]; then
+            # Extract directory name and add it to the array
+            directory=$(dirname "$file")
+            filtered_directories+=("$directory")
             fi
           done
-          if [[ -z "${directories[*]}" ]]; then
-            echo "directories=[]" >> $GITHUB_OUTPUT
+          echo "Filtered directories:"
+          for dir in "${filtered_directories[@]}"; do
+            echo "$dir"
+          done
+          if [ ${#filtered_directories[@]} -eq 0 ]; then
+            echo "DIRECTORIES=null" >> $GITHUB_OUTPUT
           else
-            echo "directories=[$(IFS=, ; echo "${directories[@]}")]" >> $GITHUB_OUTPUT
+            # Join array elements with comma and enclose with quotes
+            IFS=,; directories_string="${filtered_directories[*]}"
+            # Remove trailing comma
+            directories_string="${directories_string%,}"
+            echo "DIRECTORIES=${directories_string}" >> $GITHUB_OUTPUT
           fi
-
+          
+          
   build_images:
     runs-on: ubuntu-latest
-    needs: get_changed_directories
-    if: needs.get_changed_directories.outputs.directories != '[]'
+    if: ${{ needs.Get_Changed_dir.outputs.DIRECTORIES != 'null' }}
+    needs: Get_Changed_dir
     strategy:
-      matrix:
-        dockerfile: ${{ fromJSON(needs.get_changed_directories.outputs.directories) }}
+      # fail-fast: false
+      matrix: 
+        dockerfile: [ "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}" ]
+        # dockerfile: ${{ fromJSON(needs.Get_Changed_dir.outputs.DIRECTORIES) }}
     steps:
-      - uses: actions/checkout@v4
-
-      - name: List changed directories (informational)
-        run: echo "${{ needs.get_changed_directories.outputs.directories }}"
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Build
+        run: |-
+          echo "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}"
+      - name: Build
+        run: |-
+          echo $dockerfile
+      - name: Build
+        run: |-
+          for dir in ${{ matrix.dockerfile }}; do
+          echo "Building Docker image in directory: $dir"
+          docker build -t "${{ github.ref_name }}:${{ github.run_number }}" -f ./$dir/Dockerfile ./$dir
+          done
