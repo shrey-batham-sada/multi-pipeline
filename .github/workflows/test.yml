@@ -67,10 +67,10 @@ jobs:
           echo "${{ needs.Get_Changed_dir.outputs.DIRECTORIES }}"
       - name: Build
         run: |-
-          echo $dockerfile
-      - name: Build
-        run: |-
-          for dir in ${{ matrix.dockerfile }}; do
-          echo "Building Docker image in directory: $dir"
-          docker build -t "${{ github.ref_name }}:${{ github.run_number }}" -f ./$dir/Dockerfile ./$dir
-          done
+          echo ${{ matrix.dockerfile }}
+      # - name: Build
+      #   run: |-
+      #     for dir in ${{ matrix.dockerfile }}; do
+      #     echo "Building Docker image in directory: $dir"
+      #     docker build -t "${{ github.ref_name }}:${{ github.run_number }}" -f ./$dir/Dockerfile ./$dir
+      #     done
